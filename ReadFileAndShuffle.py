@@ -58,19 +58,19 @@ def write_test_file(list_test_data):
     if not os.path.exists('./test'):
         os.makedirs('./test')
 
-    f = open('./test/testing_file_with_tags.csv', 'wt')
+    f = open('./test/testing_file_with_tags.tsv', 'w')
     try:
-        writer = csv.writer(f)
+
         # for i in range(10):
         #     writer.writerow( (i+1, chr(ord('a') + i), '08/%02d/07' % (i+1)) )
         for list_sentence in list_test_data:
             for word_tag in list_sentence:
                 print word_tag[0], word_tag[1]
-                writer.writerow((word_tag[0], word_tag[1]))
+                f.write(str(word_tag[0]+'\t'+'\t'+word_tag[1]+'\n'))
     finally:
         f.close()
 
-    f = open('./test/testing_file_without_tags.csv', 'wt')
+    f = open('./test/testing_file_without_tags.tsv', 'w')
     try:
         for list_sentence in list_test_data:
             for word_tag in list_sentence:
@@ -79,7 +79,23 @@ def write_test_file(list_test_data):
     finally:
         f.close()
 
-    print open('./test/testing_file_without_tags.csv', 'rt').read()
+    print open('./test/testing_file_without_tags.tsv', 'r').read()
+
+def write_train_file(list_train_data):
+    if not os.path.exists('./train'):
+        os.makedirs('./train')
+
+    f = open('./train/train_data.tsv', 'w')
+    try:
+
+        # for i in range(10):
+        #     writer.writerow( (i+1, chr(ord('a') + i), '08/%02d/07' % (i+1)) )
+        for list_sentence in list_train_data:
+            for word_tag in list_sentence:
+                print word_tag[0], word_tag[1]
+                f.write(str(word_tag[0]+'\t'+word_tag[1]+'\n'))
+    finally:
+        f.close()
 
 
 
@@ -92,25 +108,10 @@ def partition(lst, n):
 def create_partitions_for_crossvalidation(list_train_data):
     list_partitions = []
     list_index_values = partition(range(0, len(list_train_data)), 7)
-    """
-    for list_partition in list_index_values:
-        list_temp = []
-        for index in list_partition:
-            list_temp.append(list_sentences[index])
-        list_partitions.append(list_temp)
-        list_temp = []
-    for list_sentences_partition in list_partitions:
-        print len(list_sentences_partition)
-
-    print "list partitions", list_partitions[0]
-    print "list_values", list_index_values[0]
-
-    """
-
     if not os.path.exists('./train'):
         os.makedirs('./train')
     i = 1
-    print "List test data", len(list_train_data)
+    print "List train data", len(list_train_data)
     for list_partition_index in list_index_values:
         print i, len(list_partition_index)
         print list_partition_index[0], list_partition_index[len(list_partition_index)-1]
@@ -118,17 +119,50 @@ def create_partitions_for_crossvalidation(list_train_data):
 
         print list_train_data[list_partition_index[0]], list_train_data[list_partition_index[len(list_partition_index)-1]]
 
-        f = open('./train/train_partition_'+str(i)+'.csv', 'wt')
+        f = open('./train/train_partition_'+str(i)+'.tsv', 'w')
         try:
             writer = csv.writer(f)
             for sentence_index in list_partition_index:
                 for word in list_train_data[sentence_index]:
                     print i, sentence_index, word
-                    writer.writerow((word[0], word[1]))
+                    f.write(str(word[0]+'\t'+word[1]+'\n'))
         finally:
             f.close()
 
         i += 1
+
+def create_crossvalidation_sets():
+    if not os.path.exists('./cross_validation'):
+        os.makedirs('./cross_validation')
+    for i in range(1,8):
+        list_train_cv = []
+        list_test_cv = []
+        print type(list_test_cv)
+        print type(list_test_cv)
+        if not os.path.exists('./cross_validation/cv_set_'+str(i)):
+            os.makedirs('./cross_validation/cv_set_'+str(i))
+        for j in range(1,8):
+            if i == j:
+                with open('./train/train_partition_'+str(i)+'.tsv', 'r') as file:
+                    for line in file:
+                        list_test_cv.append(line)
+
+                with open('./cross_validation/cv_set_'+str(i)+'/test.tsv', 'w') as test_file:
+                    for line in list_test_cv:
+                        list_line = line.strip().split('\t')
+                        test_file.write(str(list_line[0]+'\t'+'\t'+list_line[1]+'\n'))
+
+
+            else:
+                with open('./train/train_partition_'+str(j)+'.tsv', 'r') as file:
+                    for line in file:
+                        list_train_cv.append(line)
+
+        with open('./cross_validation/cv_set_'+str(i)+'/train.tsv', 'w') as train_file:
+            for line in list_train_cv:
+                train_file.write(line)
+
+
 
 
 
@@ -138,7 +172,9 @@ def main():
     shuffle_array()
     list_test_data, list_train_data = split_training_test()
     write_test_file(list_test_data)
+    write_train_file(list_train_data)
     create_partitions_for_crossvalidation(list_train_data)
+    create_crossvalidation_sets()
 main()
 
 

@@ -1,0 +1,85 @@
+Note: 
+Training and testing can be done only by modifying properties file and 
+running it through command line. 
+You can refer documentation for modifying properties file and training at: 
+http://nlp.stanford.edu/software/crf-faq.shtml#b
+
+
+Scripts for running from parent directory: 
+
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop stanford-ner-2014-08-27/austen_custom.prop
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./test/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv 
+
+For cross validation 7 properties files are created in each cross validation folder.
+
+Scripts for training and testing 7 models:
+mkdir output
+
+1. 
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_1/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_1/ner-model.ser.gz -testFile ./cross_validation/cv_set_1/test.tsv  > ./cross_validation/cv_set_1/output.tsv 
+
+2. 
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_2/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_2/ner-model.ser.gz -testFile ./cross_validation/cv_set_2/test.tsv  >  ./cross_validation/cv_set_2/output.tsv 
+
+3.
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_3/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_3/ner-model.ser.gz -testFile ./cross_validation/cv_set_3/test.tsv  >  ./cross_validation/cv_set_3/output.tsv 
+
+4.
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_4/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_4/ner-model.ser.gz -testFile ./cross_validation/cv_set_4/test.tsv  >  ./cross_validation/cv_set_4/output.tsv  
+
+5.
+
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_5/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_5/ner-model.ser.gz -testFile ./cross_validation/cv_set_5/test.tsv  >  ./cross_validation/cv_set_5/output.tsv  
+
+6.
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_6/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_6/ner-model.ser.gz -testFile ./cross_validation/cv_set_6/test.tsv  >  ./cross_validation/cv_set_6/output.tsv 
+
+7.
+sudo java -mx6g -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./cross_validation/cv_set_7/prop_file.prop
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_7/ner-model.ser.gz -testFile ./cross_validation/cv_set_7/test.tsv   >  ./cross_validation/cv_set_7/output.tsv 
+
+
+To get the output for ensemble classifier:
+Run the trained model in each of the cross validation folder with the test data and output it to a file in the folder output_for_ensemble:
+
+1.
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_1/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  > ./output_for_ensemble/output1.tsv 
+
+2. 
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_2/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  >  ./output_for_ensemble/output2.tsv 
+
+3. 
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_3/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  >  ./output_for_ensemble/output3.tsv 
+
+4. 
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_4/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  >  ./output_for_ensemble/output4.tsv  
+
+5. 
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_5/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  >  ./output_for_ensemble/output5.tsv  
+
+6.
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_6/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv  >  ./output_for_ensemble/output6.tsv 
+
+7. 
+
+java -cp stanford-ner-2014-08-27/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./cross_validation/cv_set_7/ner-model.ser.gz -testFile ./test/testing_file_with_tags.tsv   >  ./output_for_ensemble/output7.tsv
+
+
+
+
+
+
+
